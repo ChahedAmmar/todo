@@ -1,15 +1,20 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { FC, useState } from "react";
 import { todoType } from "@/types/todoType";
 import Todo from "./todo";
 import AddTodo from "./addTodo";
-import { addTodo, deleteTodo, editTodo, toggleTodo } from "@/actions/todoAction";
+import {
+  addTodo,
+  deleteTodo,
+  editTodo,
+  toggleTodo,
+} from "@/actions/todoAction";
 import { addUser } from "@/actions/userActions";
 
 interface Props {
   todos: todoType[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  user: any; // Assuming user object with id is passed
+  user: any;
 }
 
 const Todos: FC<Props> = ({ todos, user }) => {
@@ -18,10 +23,13 @@ const Todos: FC<Props> = ({ todos, user }) => {
 
   // Function to create a new todo item
   const createTodo = (text: string) => {
-    //addUser()
-  const id = (todoItems.at(-1)?.id || 0) + 1;
-    addTodo(id, text, user?.id); // Assuming user.id is available
-   setTodoItems((prev) => [...prev, { id: id, text, done: false, userId: user?.id }]);
+    // addUser();
+    const id = new Date().getTime();
+    addTodo(id, text, user?.id);
+    setTodoItems((prev) => [
+      ...prev,
+      { id: id, text, done: false, userId: user?.id },
+    ]);
   };
 
   // Function to change the text of a todo item
@@ -33,11 +41,13 @@ const Todos: FC<Props> = ({ todos, user }) => {
   };
 
   // Function to toggle the "done" status of a todo item
-  const toggleIsTodoDone = (id: number) => {
+  const toggleIsTodoDone = (id: number, done: boolean) => {
     setTodoItems((prev) =>
-      prev.map((todo) => (todo.id === id ? { ...todo, done: !todo.done } : todo))
+      prev.map((todo) =>
+        todo.id === id ? { ...todo, done: !todo.done } : todo
+      )
     );
-    toggleTodo(id);
+    toggleTodo(id, done);
   };
 
   // Function to delete a todo item

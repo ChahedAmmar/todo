@@ -21,7 +21,7 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
-export const todo= pgTable("todos", {
+export const todos = pgTable("todos", {
   id: bigint("id", { mode: "number" }).primaryKey(),
   text: text("text").notNull(),
   done: boolean("done").default(false).notNull(),
@@ -30,10 +30,10 @@ export const todo= pgTable("todos", {
     .references(() => users.id),
 });
 
-export const todosRelations = relations(todo, ({ one }) => ({
-  user: one(users, { fields: [todo.userId], references: [users.id] }),
+export const todosRelations = relations(todos, ({ one }) => ({
+  user: one(users, { fields: [todos.userId], references: [users.id] }),
 }));
 
 export const usersRelations = relations(users, ({ many }) => ({
-  todos: many(todo),
+  todos: many(todos),
 }));

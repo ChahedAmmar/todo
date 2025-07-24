@@ -5,7 +5,7 @@ export default function SignUpPage() {
   console.log('SignUp page is rendering')
   return (
     <div>
-      <h1>Sign Up Page</h1>
+      
       <SignUp />
     </div>
   )

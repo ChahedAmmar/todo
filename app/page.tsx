@@ -1,21 +1,31 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getData } from "@/actions/todoAction";
-import { getAllUsers, getUser } from "@/actions/userActions";
+import {  getUser } from "@/actions/userActions";
 import Todos from "@/components/todos";
 import { currentUser } from "@clerk/nextjs/server";
 import Image from "next/image";
 
 export default async function Home() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const user: any = await currentUser();
-  if (!user) return;
-  const fetchedData = await getUser(user?.id);
-  console.log(fetchedData);
+  const clerkUser = await currentUser();
+
+  if (!clerkUser) {
+    return <div>Please sign in to view your todos.</div>;
+  }
+
+  const fetchedData = await getUser({
+    clerkId: clerkUser.id,
+    name: `${clerkUser.firstName} ${clerkUser.lastName}`,
+    email: clerkUser.emailAddresses[0]?.emailAddress || "",
+    firstName: clerkUser.firstName || "",
+    lastName: clerkUser.lastName || "",
+    photo: clerkUser.imageUrl,
+  });
+
+  if (!fetchedData) return <div>Loading...</div>;
 
   return (
-    fetchedData && (
-      <main className="flex  items-center justify-between ">
-        <Todos todos={fetchedData[0].todos} user={fetchedData[0]} />
-      </main>
-    )
+    <main className="flex items-center justify-between">
+      <Todos todos={fetchedData.todos} user={fetchedData} />
+    </main>
   );
 }
